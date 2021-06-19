@@ -95,4 +95,20 @@ public class HeroController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/heroes/find/{name}")
+    public ResponseEntity<List<Hero>> findByName(@PathVariable String name) {
+        try {
+            List<Hero> heroes = heroRepository.findByNameContaining(name);
+
+            if (heroes.isEmpty() || heroes.size() == 0) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+            return new ResponseEntity<>(heroes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
 }
