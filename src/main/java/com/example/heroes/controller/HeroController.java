@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.heroes.entity.Hero;
-import com.example.heroes.repository.IHeroRepository;
+import com.example.heroes.service.HeroService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class HeroController {
-    
+
     @Autowired
-    IHeroRepository heroRepository;
+    private HeroService heroService;
 
     @GetMapping("/heroes")
     public ResponseEntity<List<Hero>> getAllHeroes() {
         try {
-            List<Hero> heroes = heroRepository.findAll();
+            List<Hero> heroes = heroService.getAllHeroes();
 
             if (heroes.isEmpty() || heroes.size() == 0) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -43,7 +43,7 @@ public class HeroController {
     @GetMapping("/heroes/{id}")
     public ResponseEntity<Hero> getHero(@PathVariable Long id) {
         try {
-            Optional<Hero> hero = heroRepository.findById(id);
+            Optional<Hero> hero = heroService.getHero(id);
 
             if(hero.isPresent()){
                 return new ResponseEntity<>(hero.get(), HttpStatus.OK);
@@ -58,7 +58,7 @@ public class HeroController {
     @PostMapping("/heroes")
     public ResponseEntity<Hero> saveHero(@RequestBody Hero hero) {
         try{
-            return new ResponseEntity<>(heroRepository.save(hero), HttpStatus.CREATED);
+            return new ResponseEntity<>(heroService.saveHero(hero), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -67,7 +67,7 @@ public class HeroController {
     @PutMapping("/heroes")
     public ResponseEntity<Hero> updateHero(@RequestBody Hero hero) {
         try {
-            return new ResponseEntity<>(heroRepository.save(hero), HttpStatus.OK);
+            return new ResponseEntity<>(heroService.saveHero(hero), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -76,7 +76,7 @@ public class HeroController {
     @DeleteMapping("/heroes")
     public ResponseEntity<HttpStatus> deleteHeroes() {
         try {
-            heroRepository.deleteAll();
+            heroService.deleteHeroes();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,10 +86,7 @@ public class HeroController {
     @DeleteMapping("/heroes/{id}")
     public ResponseEntity<HttpStatus> deleteHero(@PathVariable Long id) {
         try {
-            Optional<Hero> hero = heroRepository.findById(id);
-            if (hero.isPresent()) {
-                heroRepository.delete(hero.get());
-            }
+            heroService.deleteHero(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,7 +96,7 @@ public class HeroController {
     @GetMapping("/heroes/find/{name}")
     public ResponseEntity<List<Hero>> findByName(@PathVariable String name) {
         try {
-            List<Hero> heroes = heroRepository.findByNameContaining(name);
+            List<Hero> heroes = heroService.findByName(name);
 
             if (heroes.isEmpty() || heroes.size() == 0) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
