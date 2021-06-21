@@ -2,9 +2,9 @@ package com.example.heroes;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import com.example.heroes.entity.Hero;
+import com.example.heroes.model.HeroDTO;
 import com.example.heroes.service.HeroService;
 
 import org.junit.Test;
@@ -23,15 +23,15 @@ public class HeroServiceTest {
 
     @Test
     public void getAllHeroes() {
-        List<Hero> heroes = heroService.getAllHeroes();
+        List<HeroDTO> heroes = heroService.getAllHeroes();
 
         Assertions.assertEquals(heroes.size(), 6); 
     }
 
     @Test
     public void getHero() {
-        Optional<Hero> hero = heroService.getHero(2L);
-        Assertions.assertEquals("SPIDERMAN", hero.get().getName());
+        HeroDTO hero = heroService.getHero(2L);
+        Assertions.assertEquals("SPIDERMAN", hero.getName());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class HeroServiceTest {
         Hero hero = new Hero();
         hero.setId(7L);
         hero.setName("POPEYE");
-        Hero savedHero = heroService.saveHero(hero);
+        HeroDTO savedHero = heroService.saveHero(hero);
         Assertions.assertEquals(hero.getId(), savedHero.getId());
         Assertions.assertEquals(hero.getName(), savedHero.getName());
         heroService.deleteHero(7L);
@@ -47,7 +47,7 @@ public class HeroServiceTest {
 
     @Test
     public void findByName() {
-        List<Hero> heroes = heroService.findByName("MAN");
+        List<HeroDTO> heroes = heroService.findByName("MAN");
         Assertions.assertEquals(4, heroes.size());
     }
 
