@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.heroes.annotation.Timer;
+import com.example.heroes.converter.HeroConverter;
 import com.example.heroes.entity.Hero;
+import com.example.heroes.model.HeroDTO;
 import com.example.heroes.repository.IHeroRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +18,22 @@ public class HeroService {
     @Autowired
     private IHeroRepository heroRepository;
 
+    @Autowired
+    private HeroConverter heroConverter;
+
     @Timer
-    public List<Hero> getAllHeroes() {
-        return heroRepository.findAll();
+    public List<HeroDTO> getAllHeroes() {
+        return heroConverter.toHero(heroRepository.findAll());
     }
 
     @Timer
-    public Optional<Hero> getHero(Long id) {
-        return heroRepository.findById(id);
+    public HeroDTO getHero(Long id) {
+        return heroConverter.toHero(heroRepository.findById(id).get());
     }
 
     @Timer
-    public Hero saveHero(Hero hero) {
-        return heroRepository.save(hero);
+    public HeroDTO saveHero(Hero hero) {
+        return heroConverter.toHero(heroRepository.save(hero));
     }
 
     @Timer
@@ -45,8 +50,8 @@ public class HeroService {
     }
 
     @Timer
-    public List<Hero> findByName(String name) {
-        return heroRepository.findByNameContaining(name);
+    public List<HeroDTO> findByName(String name) {
+        return heroConverter.toHero(heroRepository.findByNameContaining(name));
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.heroes.entity.Hero;
+import com.example.heroes.model.HeroDTO;
 import com.example.heroes.service.HeroService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,9 @@ public class HeroController {
     private HeroService heroService;
 
     @GetMapping("/heroes")
-    public ResponseEntity<List<Hero>> getAllHeroes() {
+    public ResponseEntity<List<HeroDTO>> getAllHeroes() {
         try {
-            List<Hero> heroes = heroService.getAllHeroes();
+            List<HeroDTO> heroes = heroService.getAllHeroes();
 
             if (heroes.isEmpty() || heroes.size() == 0) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -41,12 +42,12 @@ public class HeroController {
     }
 
     @GetMapping("/heroes/{id}")
-    public ResponseEntity<Hero> getHero(@PathVariable Long id) {
+    public ResponseEntity<HeroDTO> getHero(@PathVariable Long id) {
         try {
-            Optional<Hero> hero = heroService.getHero(id);
+            HeroDTO hero = heroService.getHero(id);
 
-            if(hero.isPresent()){
-                return new ResponseEntity<>(hero.get(), HttpStatus.OK);
+            if(hero != null){
+                return new ResponseEntity<>(hero, HttpStatus.OK);
             }
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -56,7 +57,7 @@ public class HeroController {
     }
 
     @PostMapping("/heroes")
-    public ResponseEntity<Hero> saveHero(@RequestBody Hero hero) {
+    public ResponseEntity<HeroDTO> saveHero(@RequestBody Hero hero) {
         try{
             return new ResponseEntity<>(heroService.saveHero(hero), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -65,7 +66,7 @@ public class HeroController {
     }
 
     @PutMapping("/heroes")
-    public ResponseEntity<Hero> updateHero(@RequestBody Hero hero) {
+    public ResponseEntity<HeroDTO> updateHero(@RequestBody Hero hero) {
         try {
             return new ResponseEntity<>(heroService.saveHero(hero), HttpStatus.OK);
         } catch (Exception e) {
@@ -94,9 +95,9 @@ public class HeroController {
     }
 
     @GetMapping("/heroes/find/{name}")
-    public ResponseEntity<List<Hero>> findByName(@PathVariable String name) {
+    public ResponseEntity<List<HeroDTO>> findByName(@PathVariable String name) {
         try {
-            List<Hero> heroes = heroService.findByName(name);
+            List<HeroDTO> heroes = heroService.findByName(name);
 
             if (heroes.isEmpty() || heroes.size() == 0) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
